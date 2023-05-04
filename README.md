@@ -1,57 +1,36 @@
-Visual Studio Code project for Linux kernel sources
-===================================================
+Visual Studio Code project for Linux kernel sources SO2 edition
+===============================================================
 
-Ensure the kernel is built (at least, all `*.cmd` files should be generated):
+This is tested on a linux, not sure if this works on Windows.
 
-    $ make defconfig
-    $ make
+Clone the repo as the `.vscode` folder in your workspace directory.
+- for https
+```
+git clone https://github.com/NethDR/vscode-linux-kernel-so2.git .vscode
+```
+- for ssh
+```
+git clone git@github.com:NethDR/vscode-linux-kernel-so2.git .vscode
+```
 
-Clone this repository as ".vscode":
+Make sure to export the path to the linux kernel root as the `KDIR` env variable:
 
-    $ git clone git@github.com:amezin/vscode-linux-kernel.git .vscode
+```
+echo "export KDIR=/path/to/linux/kernel" >> ~/.bashrc
+```
 
-Generate compile_commands.json:
+Alternatively, you can modify the `tasks.json` file directly and replace the `${env:KDIR}` appearances with the path.
 
-    $ python .vscode/generate_compdb.py
 
-If you are not compiling kernel for x64, change `intelliSenseMode` in
-`c_cpp_properties.json`. Possible values as of vscode-cpptools 1.0.1:
 
-* `gcc-x86`
-* `gcc-x64`
-* `gcc-arm`
-* `gcc-arm64`
+To make intellisense work, you need to generate a `compile_commands.json` file.
 
-Open the project:
+First, make sure the kernel is built (if you ran the `make boot` command during any lab, that should have done it)
 
-    $ code .
+Now, make sure your module compiles correctly (you need to provide a `Kbuild` file and at least a [dummy implementation] of the module).
 
-Out-of-tree builds
-------------------
+Open your `Kbuild` file in the editor and press `F6`, and select `Generate compile_commands.json`.
 
-https://github.com/amezin/vscode-linux-kernel/issues/4
+Done.
 
-Kernel can be built with separate output directory:
-
-    $ make O=../linux-build defconfig
-    $ make O=../linux-build
-
-In this case, you should pass the directory to `generate_compdb.py`:
-
-    $ python .vscode/generate_compdb.py -O ../linux-build
-
-`compile_commands.json` will still be generated in the current directory (root of the `linux` repository).
-Unfortunately, `tasks.json` will not work out of the box in this configuration (TODO).
-
-Out-of-tree module development
-------------------------------
-
-If you build your module with this command:
-
-    $ make -C $KDIR M=$PWD modules
-
-You could generate `compile_commands.json` with:
-
-    $ python .vscode/generate_compdb.py -O $KDIR $PWD
-
-Example: https://github.com/amezin/nzxt-rgb-fan-controller-dkms
+[dummy implementation]: https://linux-kernel-labs.github.io/refs/heads/master/so2/lab1-intro.html#an-example-of-a-kernel-module
