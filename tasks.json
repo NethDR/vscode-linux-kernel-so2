@@ -13,7 +13,8 @@
                 "${env:KDIR}",
                 "${fileDirname}"
             ],
-            "problemMatcher": []
+            "problemMatcher": [],
+            "dependsOn": "Build"
         },
         {
             "label": "Build",
